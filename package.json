@@ -1,0 +1,22 @@
+{
+  "name": "stashpile",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --config ./webpack.config.js && open ./index.html",
+    "watch": "webpack --config ./webpack.config.js --watch",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/three": "^0.92.13",
+    "three": "^0.94.0",
+    "ts-loader": "^4.4.2",
+    "typescript": "^2.9.2",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0"
+  },
+  "devDependencies": {}
+}
