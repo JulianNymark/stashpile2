@@ -12,6 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "@types/three": "^0.92.13",
+    "css-loader": "^1.0.0",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
     "three": "^0.94.0",
     "ts-loader": "^4.4.2",
     "typescript": "^2.9.2",
