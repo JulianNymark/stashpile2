@@ -4,12 +4,16 @@ second time's the charm... this time in 3D!
 needs to complete MVP:
 - [x] tiles!
 - [x] 3d!
-- [x] OrbitControler.js (it's pretty amazing!)
+- [x] OrbitController.js (it's pretty amazing!)
 - [x] tile onHover information! (mouse raycast -> tile index, currently part of debugUI)
 - [ ] player (placeholder + positioning on world)
 - [ ] movement controls (moves player avatar & OrbitControl camera + OrbitControl target)
 - [ ] trees
-- [ ] actions ( (c)hop tree, (g)rab wood... )
+- [ ] actions ( **c**hop tree, **g**rab wood... etc)
+  - [ ] **c**hop ( also butcher) + direction key
+  - [ ] **d**rop + direction (dd = drop center tile)
+  - [ ] movement (hjkl + yubn (diagonals))
+  - [ ] **g**rab + direction (gg = grab center tile)
 - [ ] inventory (requires simple half world render / half menu area)
 - [ ] simple vision system (blocked by trees)
 - [ ] game time ticks (actions take ticks, movement is an action)
@@ -27,6 +31,9 @@ needs to complete MVP:
 - [ ] some sort of challenge / enemy?
 
 future 'full(er) game experience':
+- [ ] more complex actions
+  - [ ] us**e** + direction (ee = center tile, i = inventory)
+  - [ ] **i**nventory show / list inventory (+ allow actions from item)
 - [ ] more complex wound system (health loss is 'per wound', and wounds can heal in parallel, variable wound types...)
   - 100 health 'points' is just for 'overal health', sustaining different wound types (or just 1 really bad one) can take you to 0.
 - [ ] more complex vision system (camera at player view tile, render objects + count red pixels)
