@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export function addCuboid(scene: THREE.Scene, position: THREE.Vector3): THREE.Mesh {
     const geometry = new THREE.BoxGeometry(1, 1, 0.45);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const material = new THREE.MeshBasicMaterial({ color: 0x999966 });
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
     mesh.position.set(position.x, position.y, position.z);

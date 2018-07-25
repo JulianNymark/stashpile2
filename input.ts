@@ -35,7 +35,7 @@ export function init(inputInit: InputInit) {
     orbitControls.reset();
 }
 
-export function loop() {
+export function loop(dt: number) {
     orbitControls.update();
 
     raycaster.setFromCamera(mouse, camera);
