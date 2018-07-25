@@ -13,7 +13,7 @@ module.exports = {
                     options: {
                         transpileOnly: true,
                         experimentalWatchApi: true,
-                    }
+                    },
                 },
                 exclude: /node_modules/
             },
@@ -25,18 +25,26 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            includePaths: [__dirname]
-                        }
+                            includePaths: [__dirname],
+                        },
                     }],
-                exclude: /node_modules/
-            }
-        ]
+                exclude: /node_modules/,
+            },
+            {
+                test: /three\/examples\/js/,
+                use: 'imports-loader?THREE=three',
+            },
+        ],
     },
     resolve: {
-        extensions: ['.ts', '.js', '.scss']
+        alias: {
+            'three-examples': path.join(__dirname, './node_modules/three/examples/js')
+        },
+        extensions: ['.ts', '.js', '.scss'],
     },
     output: {
+        pathinfo: false,
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    }
+        path: path.resolve(__dirname, 'dist'),
+    },
 };

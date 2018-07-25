@@ -1,67 +1,77 @@
-import * as three from 'three';
+import * as THREE from 'three';
+import 'three-examples/controls/OrbitControls';
 
 import './main.scss';
+import * as debugUI from './debugUI';
 
-let scene: three.Scene;
-let camera: three.Camera;
-let renderer: three.WebGLRenderer;
-const meshesToAnimate: three.Mesh[] = [];
+let controls: THREE.OrbitControls;
+let scene: THREE.Scene;
+let camera: THREE.Camera;
+let renderer: THREE.WebGLRenderer;
+const meshesToAnimate: THREE.Mesh[] = [];
 
-function addCuboid(scene: three.Scene, position: three.Vector3) {
-    const geometry = new three.BoxGeometry(0.5, 0.5, 2);
-    const material = new three.MeshPhongMaterial({ color: 0x00ff00 });
-    const cube = new three.Mesh(geometry, material);
+function addCuboid(scene: THREE.Scene, position: THREE.Vector3) {
+    const geometry = new THREE.BoxGeometry(1, 1, 0.45);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
     meshesToAnimate.push(cube);
     cube.position.set(position.x, position.y, position.z);
 }
 
 function init() {
-    scene = new three.Scene();
-    camera = new three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 600);
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 600);
 
-    renderer = new three.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const randscale = 5;
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    for (let i = 0; i < 100; i++) {
-        const position = new three.Vector3(
-            Math.random() * randscale - randscale / 2,
-            Math.random() * randscale - randscale / 2,
-            Math.random() * (randscale * 100) - 100,
-        );
-        addCuboid(
-            scene,
-            position,
-        );
+    const scale = 1.5;
+
+    for (let y = -5; y < 5; y++) {
+        for (let x = -5; x < 5; x++) {
+            const position = new THREE.Vector3(
+                x * scale, y * scale, -20,
+            );
+            addCuboid(
+                scene,
+                position,
+            );
+        }
     }
 
-    // const light = new three.PointLight(undefined, 1, 15, 5);
-    // light.position.set(0, 0, -0.5);
+    // const light = new three.PointLight(0xffffff, 1, 20, 10);
+    // light.position.set(0, 0, 7);
     // scene.add(light);
 
-    const light2 = new three.PointLight(0xff11ff, 20, 20, 10);
-    light2.position.set(0, 0, -0.2);
-    scene.add(light2);
+    // camera.rotation.x = Math.PI * 0.2;
+    // camera.rotation.y = Math.PI * 0.1;
+    // camera.position.z = -8;
+    // camera.position.y = -8;
 
-    // addCuboid(scene, [0, 0, 0]);
-    // addCuboid(scene, [0, 1, 0]);
-    // addCuboid(scene, [0, -1, 0]);
-
-    camera.position.z = 5;
+    debugUI.init(camera);
 }
 
 function animate() {
     requestAnimationFrame(animate);
 
     for (const mesh of meshesToAnimate) {
-        mesh.rotation.x += 0.06;
-        mesh.rotation.y += 0.1;
-        const gravity = new three.Vector3(0, 0, 0.1);
-        mesh.position.add(gravity);
+        // mesh.rotation.x += 0.06;
+        // mesh.rotation.y += 0.1;
+        if (Math.random() >= 0.5) {
+            mesh.position.z += 0.01;
+        } else {
+            mesh.position.z -= 0.01;
+        }
+
+        // const gravity = new three.Vector3(0, 0, 0.1);
+        // mesh.position.add(gravity);
     }
+
+    controls.update();
 
     renderer.render(scene, camera);
 }
@@ -70,3 +80,4 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     animate();
 });
+
