@@ -18,7 +18,7 @@ needs to complete MVP:
   - basic move (brisk pace, average fitness... etc) 140 ticks?
   - sprinting as fast as possible = 30 ticks?, if speed is <=15 ticks per tile, you're superhuman (but you run out of breath in ~8 to 10 seconds, so roughly 1600 ticks, superhuman stamina >= 1600 ticks)
   - broken leg = +200% tick modifier? ()... etc
-  - heal 1 health every 100000 ticks?, holding medkit allows healing to full... etc (balance)
+  - heal 1 health every 720000 ticks?, holding medkit allows healing to full... etc (balance)
 - [ ] simple stats (health 0 = you die..., satiation or thirst 0 = lose 1 health every 10000 ticks + 150% tick movement modifier )
   - in real life 2 days without water or 60 days without food = death
     - progressively get worse ailments * ( ticks_since_last_drink / 34560000), where you collapse & die at 34560000 ticks (2 days)
@@ -27,6 +27,8 @@ needs to complete MVP:
 - [ ] some sort of challenge / enemy?
 
 future 'full(er) game experience':
+- [ ] more complex wound system (health loss is 'per wound', and wounds can heal in parallel, variable wound types...)
+  - 100 health 'points' is just for 'overal health', sustaining different wound types (or just 1 really bad one) can take you to 0.
 - [ ] more complex vision system (camera at player view tile, render objects + count red pixels)
 - [ ] complex targeting & hit system (camera at origin, render facing target, target material red, count red pixels)
 - [ ] smell system (are there even enemies that smell you?)
