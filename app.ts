@@ -10,6 +10,7 @@ let scene: THREE.Scene;
 let camera: THREE.Camera;
 let renderer: THREE.WebGLRenderer;
 const meshesToAnimate: THREE.Mesh[] = [];
+export const meshes: THREE.Mesh[] = [];
 
 function init() {
     scene = new THREE.Scene();
@@ -20,11 +21,17 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.mouseButtons = {
+        ORBIT: THREE.MOUSE.RIGHT,
+        PAN: THREE.MOUSE.LEFT,
+        ZOOM: THREE.MOUSE.MIDDLE,
+    };
+    controls.screenSpacePanning = false;
 
     const scale = 1.5;
 
-    for (let y = -5; y < 5; y++) {
-        for (let x = -5; x < 5; x++) {
+    for (let y = -10; y < 10; y++) {
+        for (let x = -10; x < 10; x++) {
             const position = new THREE.Vector3(
                 x * scale, y * scale, 0,
             );
@@ -32,17 +39,9 @@ function init() {
         }
     }
 
-    debugUI.init(camera);
-}
+    meshes.push(utils.addSphere(scene, new THREE.Vector3(0, 0, 0)));
 
-let lastFrameTime = 0;
-let currFrameTime = 0;
-function _loop(DOMHighResTimeStamp: number) {
-    lastFrameTime = currFrameTime;
-    currFrameTime = DOMHighResTimeStamp;
-    const deltaTime = currFrameTime - lastFrameTime;
-    loop(deltaTime);
-    requestAnimationFrame(_loop);
+    debugUI.init(controls);
 }
 
 function loop(dt: number) {
@@ -68,5 +67,5 @@ function loop(dt: number) {
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
-    _loop(0);
+    utils.deltaLoop(loop);
 });

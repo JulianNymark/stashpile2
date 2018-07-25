@@ -1,23 +1,32 @@
 import * as _ from 'lodash';
 import * as THREE from 'three';
 
+import { meshes } from './app';
+
 function fpsCounter(dt: number) {
     const fpsID = 'fps-counter';
     const fpsElement: HTMLElement | null = document.getElementById(fpsID);
     if (fpsElement) {
-        fpsElement.innerHTML = (1000 / dt).toString();
+        fpsElement.innerHTML = Math.round((1000 / dt)).toString();
     } else {
         console.log(`error finding element ${fpsID}, won't display fps`);
     }
 }
 
-export function init(camera: THREE.Camera) {
+export function init(orbitControls: THREE.OrbitControls) {
     const debugUI: HTMLElement = document.getElementById('debug-ui');
     debugUI.hidden = false;
 
-    sliderControl('slider0', camera, 'rotation.x', Math.PI);
-    sliderControl('slider1', camera, 'position.z', 20);
-    sliderControl('slider2', camera, 'position.y', 20);
+    sliderControl('slider0', orbitControls.object, 'position.x', 20);
+    sliderControl('slider1', orbitControls.object, 'position.y', 20);
+    sliderControl('slider2', orbitControls.object, 'position.z', 20);
+
+    sliderControl('slider3', orbitControls.target, 'x', 20);
+    sliderControl('slider4', orbitControls.target, 'y', 20);
+    sliderControl('slider5', orbitControls.target, 'z', 20);
+    sliderControl('slider3', meshes[0], 'position.x', 20);
+    sliderControl('slider4', meshes[0], 'position.y', 20);
+    sliderControl('slider5', meshes[0], 'position.z', 20);
 }
 
 export function loop(dt: number) {
@@ -44,10 +53,11 @@ function sliderControl(sliderID: string, target: object, valpath: string, coeffi
                 console.log(`error with event target`);
             }
             if (valueElem) {
-                valueElem.innerHTML = newValue.toString();
+                valueElem.innerHTML = newValue.toFixed(2).toString();
             } else {
                 console.log(`error finding element ${sliderID + '-val'}, won't display val`);
             }
+            console.log(JSON.stringify(target.target));
             _.set(target, valpath, newValue);
         });
     } else {
