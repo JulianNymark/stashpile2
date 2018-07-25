@@ -14,7 +14,11 @@
             "single"
         ],
         "no-shadowed-variable": false,
-        "no-console": false
+        "no-console": false,
+        "variable-name": [
+            true,
+            "allow-leading-underscore"
+        ]
     },
     "rulesDirectory": []
 }

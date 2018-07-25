@@ -2,13 +2,15 @@ import * as THREE from 'three';
 import 'three-examples/controls/OrbitControls';
 
 import * as debugUI from './debugUI';
+import * as input from './input';
 import './main.scss';
 import * as utils from './utils';
 
 let controls: THREE.OrbitControls;
 let scene: THREE.Scene;
-let camera: THREE.Camera;
+export let camera: THREE.Camera;
 let renderer: THREE.WebGLRenderer;
+
 const meshesToAnimate: THREE.Mesh[] = [];
 export const meshes: THREE.Mesh[] = [];
 
@@ -50,10 +52,14 @@ function init() {
 
     meshes.push(utils.addSphere(scene, new THREE.Vector3(0, 0, 0)));
 
+    input.init({ scene, camera });
+
     debugUI.init(controls);
 }
 
 function loop(dt: number) {
+    controls.update();
+
     for (const mesh of meshesToAnimate) {
         // mesh.rotation.x += 0.06;
         // mesh.rotation.y += 0.1;
@@ -67,10 +73,10 @@ function loop(dt: number) {
         // mesh.position.add(gravity);
     }
 
-    controls.update();
+    // update the picking ray with the camera and mouse position
+    input.mouseOver();
 
     renderer.render(scene, camera);
-
     debugUI.loop(dt);
 }
 
