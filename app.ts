@@ -27,10 +27,9 @@ function init() {
         PAN: THREE.MOUSE.LEFT,
         ZOOM: THREE.MOUSE.MIDDLE,
     };
-    controls.position0.set(0, 0, 10); // set a new desired position
+    controls.position0.set(4, 4, 8); // set a new desired position
     controls.target0.set(0, 0, 0); // set a new target
     console.log(JSON.stringify(controls, null, 2));
-    //controls.up.set(0, 1, 0); // set a new up vector
     // controls.screenSpacePanning = true;
     controls.reset();
 
@@ -38,7 +37,7 @@ function init() {
     plane.rotation.x = Math.PI / 2;
     scene.add(plane);
 
-    const scale = 1.1;
+    const scale = 1.2;
 
     for (let y = -10; y < 10; y++) {
         for (let x = -10; x < 10; x++) {
