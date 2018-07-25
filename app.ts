@@ -11,7 +11,7 @@ let camera: THREE.Camera;
 let renderer: THREE.WebGLRenderer;
 
 const meshesToAnimate: THREE.Mesh[] = [];
-const meshes: THREE.Mesh[] = [];
+// const meshes: THREE.Mesh[] = [];
 
 function init() {
     scene = new THREE.Scene();
@@ -33,10 +33,9 @@ function init() {
         }
     }
 
-    meshes.push(utils.addSphere(scene, new THREE.Vector3(0, 0, 0)));
 
     input.init({ scene, camera, renderer });
-    debugUI.init({ scene, meshes, orbitControls: input.orbitControls });
+    debugUI.init({ scene, orbitControls: input.orbitControls });
 }
 
 function loop(dt: number) {

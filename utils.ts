@@ -11,7 +11,7 @@ export function addCuboid(scene: THREE.Scene, position: THREE.Vector3): THREE.Me
 
 export function addSphere(scene: THREE.Scene, position: THREE.Vector3): THREE.Mesh {
     const geometry = new THREE.SphereGeometry(0.2);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const material = new THREE.MeshBasicMaterial({ color: 0xff00ff });
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
     mesh.position.set(position.x, position.y, position.z);

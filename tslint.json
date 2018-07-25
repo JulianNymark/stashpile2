@@ -18,7 +18,8 @@
         "variable-name": [
             true,
             "allow-leading-underscore"
-        ]
+        ],
+        "interface-name": false
     },
     "rulesDirectory": []
 }

@@ -1,9 +1,12 @@
 import * as _ from 'lodash';
 import * as THREE from 'three';
 
+import * as utils from './utils';
+
+const meshes: THREE.Mesh[] = [];
+
 interface DebugInit {
     scene: THREE.Scene;
-    meshes: THREE.Mesh[];
     orbitControls: THREE.OrbitControls;
 }
 
@@ -18,8 +21,16 @@ function fpsCounter(dt: number) {
 }
 
 export function init(debugInit: DebugInit) {
-    const debugUI: HTMLElement = document.getElementById('debug-ui');
-    debugUI.hidden = false;
+    const debugUI: HTMLElement | null = document.getElementById('debug-ui');
+    if (debugUI) {
+        debugUI.hidden = false;
+    }
+
+    const plane = new THREE.GridHelper(20, 40);
+    plane.rotation.x = Math.PI / 2;
+    debugInit.scene.add(plane);
+
+    meshes.push(utils.addSphere(debugInit.scene, new THREE.Vector3(0, 0, 0)));
 
     sliderControl('slider0', debugInit.orbitControls.object, 'position.x', 20);
     sliderControl('slider1', debugInit.orbitControls.object, 'position.y', 20);
@@ -28,13 +39,9 @@ export function init(debugInit: DebugInit) {
     sliderControl('slider3', debugInit.orbitControls.target, 'x', 20);
     sliderControl('slider4', debugInit.orbitControls.target, 'y', 20);
     sliderControl('slider5', debugInit.orbitControls.target, 'z', 20);
-    sliderControl('slider3', debugInit.meshes[0], 'position.x', 20);
-    sliderControl('slider4', debugInit.meshes[0], 'position.y', 20);
-    sliderControl('slider5', debugInit.meshes[0], 'position.z', 20);
-
-    const plane = new THREE.GridHelper(20, 40);
-    plane.rotation.x = Math.PI / 2;
-    debugInit.scene.add(plane);
+    sliderControl('slider3', meshes[0], 'position.x', 20);
+    sliderControl('slider4', meshes[0], 'position.y', 20);
+    sliderControl('slider5', meshes[0], 'position.z', 20);
 }
 
 export function loop(dt: number) {
@@ -65,7 +72,6 @@ function sliderControl(sliderID: string, target: object, valpath: string, coeffi
             } else {
                 console.log(`error finding element ${sliderID + '-val'}, won't display val`);
             }
-            console.log(JSON.stringify(target.target));
             _.set(target, valpath, newValue);
         });
     } else {
