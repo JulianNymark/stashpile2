@@ -1,12 +1,10 @@
 import * as THREE from 'three';
 
-import * as utils from './utils';
-
 let scene: THREE.Scene;
-let worldTiles: Tile[][];
+export let worldTiles: Tile[][];
 let tileMeshes: THREE.Mesh[];
 
-interface TileIndex {
+export interface TileIndex {
     x: number;
     y: number;
     z: number;
@@ -16,6 +14,11 @@ interface Tile {
     index: TileIndex;
     position: THREE.Vector3;
     mesh: THREE.Mesh | null;
+}
+
+interface TileInfo {
+    soilNutrition: number;
+    type: string;
 }
 
 interface WorldInit {
@@ -47,6 +50,7 @@ export function loop(dt: number) {
 class Tile {
     public isSelected: boolean = false;
     public mesh: THREE.Mesh | null = null;
+    public info: TileInfo;
 
     constructor(index: TileIndex) {
         this.index = index; // global index (map)
@@ -55,14 +59,23 @@ class Tile {
         this.position = new THREE.Vector3(
             this.index.x * scale, this.index.y * scale, 0,
         ); // rendered position
+
+        this.info = {
+            soilNutrition: Math.random(),
+            type: Math.random() > 0.5 ? 'soil' : 'gravel',
+        };
     }
 
     public update(dt: number) {
         // TODO: boundscheck around player on adding & removing to scene
-        if (this.index.x > 10 && this.index.x < 20) {
-            if (this.index.y > 10 && this.index.y < 20) {
+        if (this.index.x >= 0 && this.index.x < 10) {
+            if (this.index.y >= 0 && this.index.y < 20) {
                 this.addToScene();
+            } else {
+                this.removeFromScene();
             }
+        } else {
+            this.removeFromScene();
         }
 
         if (!this.mesh) {
@@ -82,6 +95,9 @@ class Tile {
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.set(this.position.x, this.position.y, this.position.z);
         this.mesh = mesh;
+        this.mesh.metadata = {
+            index: this.index, type: 'tile',
+        };
         tileMeshes.push(this.mesh);
 
         scene.add(this.mesh);

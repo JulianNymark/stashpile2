@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import { TileIndex } from './world';
+
 // from app
 let camera: THREE.Camera;
 let scene: THREE.Scene;
@@ -8,6 +10,11 @@ let renderer: THREE.WebGLRenderer;
 export let orbitControls: THREE.OrbitControls; // export to app is ok
 let raycaster: THREE.Raycaster;
 let mouse: THREE.Vector2;
+
+export const mouseOverTileMetadata: { index: TileIndex, type: string } = {
+    index: {},
+    type: null,
+};
 
 interface InputInit {
     scene: THREE.Scene;
@@ -42,7 +49,13 @@ export function loop(dt: number) {
     // calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(scene.children);
     for (const intersect of intersects) {
-        intersect.object.material.color.set(0xff0000);
+        const tileMetadata = intersect.object.metadata;
+        if (!tileMetadata || tileMetadata.type !== 'tile') {
+            continue;
+        }
+        console.log(JSON.stringify(tileMetadata, null, 2));
+        mouseOverTileMetadata.index = tileMetadata.index;
+        mouseOverTileMetadata.type = tileMetadata.type;
     }
 }
 
