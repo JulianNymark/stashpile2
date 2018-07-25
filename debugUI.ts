@@ -1,19 +1,27 @@
 import * as _ from 'lodash';
 import * as THREE from 'three';
 
-function fpsCounter() {
-    // TODO:
+function fpsCounter(dt: number) {
+    const fpsID = 'fps-counter';
+    const fpsElement: HTMLElement | null = document.getElementById(fpsID);
+    if (fpsElement) {
+        fpsElement.innerHTML = (1000 / dt).toString();
+    } else {
+        console.log(`error finding element ${fpsID}, won't display fps`);
+    }
 }
 
 export function init(camera: THREE.Camera) {
-    fpsCounter();
-
     const debugUI: HTMLElement = document.getElementById('debug-ui');
     debugUI.hidden = false;
 
     sliderControl('slider0', camera, 'rotation.x', Math.PI);
     sliderControl('slider1', camera, 'position.z', 20);
     sliderControl('slider2', camera, 'position.y', 20);
+}
+
+export function loop(dt: number) {
+    fpsCounter(dt);
 }
 
 /**

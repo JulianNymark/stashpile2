@@ -35,9 +35,17 @@ function init() {
     debugUI.init(camera);
 }
 
-function animate() {
-    requestAnimationFrame(animate);
+let lastFrameTime = 0;
+let currFrameTime = 0;
+function _loop(DOMHighResTimeStamp: number) {
+    lastFrameTime = currFrameTime;
+    currFrameTime = DOMHighResTimeStamp;
+    const deltaTime = currFrameTime - lastFrameTime;
+    loop(deltaTime);
+    requestAnimationFrame(_loop);
+}
 
+function loop(dt: number) {
     for (const mesh of meshesToAnimate) {
         // mesh.rotation.x += 0.06;
         // mesh.rotation.y += 0.1;
@@ -54,10 +62,11 @@ function animate() {
     controls.update();
 
     renderer.render(scene, camera);
+
+    debugUI.loop(dt);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
-    animate();
+    _loop(0);
 });
-
