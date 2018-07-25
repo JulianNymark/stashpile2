@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as THREE from 'three';
 
 interface DebugInit {
+    scene: THREE.Scene;
     meshes: THREE.Mesh[];
     orbitControls: THREE.OrbitControls;
 }
@@ -30,6 +31,10 @@ export function init(debugInit: DebugInit) {
     sliderControl('slider3', debugInit.meshes[0], 'position.x', 20);
     sliderControl('slider4', debugInit.meshes[0], 'position.y', 20);
     sliderControl('slider5', debugInit.meshes[0], 'position.z', 20);
+
+    const plane = new THREE.GridHelper(20, 40);
+    plane.rotation.x = Math.PI / 2;
+    debugInit.scene.add(plane);
 }
 
 export function loop(dt: number) {

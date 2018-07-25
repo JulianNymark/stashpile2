@@ -6,7 +6,6 @@ import * as input from './input';
 import './main.scss';
 import * as utils from './utils';
 
-let orbitControls: THREE.OrbitControls;
 let scene: THREE.Scene;
 let camera: THREE.Camera;
 let renderer: THREE.WebGLRenderer;
@@ -23,21 +22,6 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
-    orbitControls.mouseButtons = {
-        ORBIT: THREE.MOUSE.RIGHT,
-        PAN: THREE.MOUSE.LEFT,
-        ZOOM: THREE.MOUSE.MIDDLE,
-    };
-    orbitControls.position0.set(4, 4, 8); // set a new desired position
-    orbitControls.target0.set(0, 0, 0); // set a new target
-    // controls.screenSpacePanning = true;
-    orbitControls.reset();
-
-    const plane = new THREE.GridHelper(20, 40);
-    plane.rotation.x = Math.PI / 2;
-    scene.add(plane);
-
     const scale = 1.2;
 
     for (let y = -10; y < 10; y++) {
@@ -51,12 +35,11 @@ function init() {
 
     meshes.push(utils.addSphere(scene, new THREE.Vector3(0, 0, 0)));
 
-    input.init({ scene, camera });
-    debugUI.init({ meshes, orbitControls });
+    input.init({ scene, camera, renderer });
+    debugUI.init({ scene, meshes, orbitControls: input.orbitControls });
 }
 
 function loop(dt: number) {
-    orbitControls.update();
 
     for (const mesh of meshesToAnimate) {
         // mesh.rotation.x += 0.06;
@@ -71,8 +54,7 @@ function loop(dt: number) {
         // mesh.position.add(gravity);
     }
 
-    // update the picking ray with the camera and mouse position
-    input.mouseOver();
+    input.loop();
 
     renderer.render(scene, camera);
     debugUI.loop(dt);
