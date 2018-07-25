@@ -15,6 +15,7 @@ export const meshes: THREE.Mesh[] = [];
 function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 600);
+    camera.up = new THREE.Vector3(0, 0, 1);
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -26,9 +27,18 @@ function init() {
         PAN: THREE.MOUSE.LEFT,
         ZOOM: THREE.MOUSE.MIDDLE,
     };
-    controls.screenSpacePanning = false;
+    controls.position0.set(0, 0, 10); // set a new desired position
+    controls.target0.set(0, 0, 0); // set a new target
+    console.log(JSON.stringify(controls, null, 2));
+    //controls.up.set(0, 1, 0); // set a new up vector
+    // controls.screenSpacePanning = true;
+    controls.reset();
 
-    const scale = 1.5;
+    const plane = new THREE.GridHelper(20, 40);
+    plane.rotation.x = Math.PI / 2;
+    scene.add(plane);
+
+    const scale = 1.1;
 
     for (let y = -10; y < 10; y++) {
         for (let x = -10; x < 10; x++) {
