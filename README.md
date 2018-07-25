@@ -34,6 +34,9 @@ future 'full(er) game experience':
 - [ ] more complex actions
   - [ ] us**e** + direction (ee = center tile, i = inventory)
   - [ ] **i**nventory show / list inventory (+ allow actions from item)
+  - [ ] . = wait 100 ticks
+  - [ ] **s**leep
+  - [ ] **f**ire (equipped ranged weapon / throw)
 - [ ] more complex wound system (health loss is 'per wound', and wounds can heal in parallel, variable wound types...)
   - 100 health 'points' is just for 'overal health', sustaining different wound types (or just 1 really bad one) can take you to 0.
 - [ ] more complex vision system (camera at player view tile, render objects + count red pixels)
