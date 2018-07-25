@@ -1,7 +1,10 @@
 import * as _ from 'lodash';
 import * as THREE from 'three';
 
-import { meshes } from './app';
+interface DebugInit {
+    meshes: THREE.Mesh[];
+    orbitControls: THREE.OrbitControls;
+}
 
 function fpsCounter(dt: number) {
     const fpsID = 'fps-counter';
@@ -13,20 +16,20 @@ function fpsCounter(dt: number) {
     }
 }
 
-export function init(orbitControls: THREE.OrbitControls) {
+export function init(debugInit: DebugInit) {
     const debugUI: HTMLElement = document.getElementById('debug-ui');
     debugUI.hidden = false;
 
-    sliderControl('slider0', orbitControls.object, 'position.x', 20);
-    sliderControl('slider1', orbitControls.object, 'position.y', 20);
-    sliderControl('slider2', orbitControls.object, 'position.z', 20);
+    sliderControl('slider0', debugInit.orbitControls.object, 'position.x', 20);
+    sliderControl('slider1', debugInit.orbitControls.object, 'position.y', 20);
+    sliderControl('slider2', debugInit.orbitControls.object, 'position.z', 20);
 
-    sliderControl('slider3', orbitControls.target, 'x', 20);
-    sliderControl('slider4', orbitControls.target, 'y', 20);
-    sliderControl('slider5', orbitControls.target, 'z', 20);
-    sliderControl('slider3', meshes[0], 'position.x', 20);
-    sliderControl('slider4', meshes[0], 'position.y', 20);
-    sliderControl('slider5', meshes[0], 'position.z', 20);
+    sliderControl('slider3', debugInit.orbitControls.target, 'x', 20);
+    sliderControl('slider4', debugInit.orbitControls.target, 'y', 20);
+    sliderControl('slider5', debugInit.orbitControls.target, 'z', 20);
+    sliderControl('slider3', debugInit.meshes[0], 'position.x', 20);
+    sliderControl('slider4', debugInit.meshes[0], 'position.y', 20);
+    sliderControl('slider5', debugInit.meshes[0], 'position.z', 20);
 }
 
 export function loop(dt: number) {

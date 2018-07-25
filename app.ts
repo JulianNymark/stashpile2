@@ -6,13 +6,13 @@ import * as input from './input';
 import './main.scss';
 import * as utils from './utils';
 
-let controls: THREE.OrbitControls;
+let orbitControls: THREE.OrbitControls;
 let scene: THREE.Scene;
-export let camera: THREE.Camera;
+let camera: THREE.Camera;
 let renderer: THREE.WebGLRenderer;
 
 const meshesToAnimate: THREE.Mesh[] = [];
-export const meshes: THREE.Mesh[] = [];
+const meshes: THREE.Mesh[] = [];
 
 function init() {
     scene = new THREE.Scene();
@@ -23,17 +23,16 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.mouseButtons = {
+    orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+    orbitControls.mouseButtons = {
         ORBIT: THREE.MOUSE.RIGHT,
         PAN: THREE.MOUSE.LEFT,
         ZOOM: THREE.MOUSE.MIDDLE,
     };
-    controls.position0.set(4, 4, 8); // set a new desired position
-    controls.target0.set(0, 0, 0); // set a new target
-    console.log(JSON.stringify(controls, null, 2));
+    orbitControls.position0.set(4, 4, 8); // set a new desired position
+    orbitControls.target0.set(0, 0, 0); // set a new target
     // controls.screenSpacePanning = true;
-    controls.reset();
+    orbitControls.reset();
 
     const plane = new THREE.GridHelper(20, 40);
     plane.rotation.x = Math.PI / 2;
@@ -53,12 +52,11 @@ function init() {
     meshes.push(utils.addSphere(scene, new THREE.Vector3(0, 0, 0)));
 
     input.init({ scene, camera });
-
-    debugUI.init(controls);
+    debugUI.init({ meshes, orbitControls });
 }
 
 function loop(dt: number) {
-    controls.update();
+    orbitControls.update();
 
     for (const mesh of meshesToAnimate) {
         // mesh.rotation.x += 0.06;
