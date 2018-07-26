@@ -37,14 +37,15 @@ export function init(inputInit: InputInit) {
         PAN: THREE.MOUSE.LEFT,
         ZOOM: THREE.MOUSE.MIDDLE,
     };
-    orbitControls.position0.set(4, 4, 8); // set a new desired position
+    orbitControls.position0.set(0, 4, 8); // set a new desired position
     orbitControls.target0.set(0, 0, 0); // set a new target
-    // controls.screenSpacePanning = true;
+    orbitControls.enableKeys = false;
+    // orbitControls.screenSpacePanning = true;
     orbitControls.reset();
 }
 
 export function loop(dt: number) {
-    const trackPlayerVec = new THREE.Vector3(4, 4, 8).add(player.position);
+    const trackPlayerVec = new THREE.Vector3(0, 4, 8).add(player.position);
     orbitControls.object.position.fromArray(trackPlayerVec.toArray());
     orbitControls.target.fromArray(player.position.toArray());
     orbitControls.update();
@@ -70,5 +71,48 @@ function onMouseMove(event: any) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 }
-
 window.addEventListener('mousemove', onMouseMove, false);
+
+function keyDownHandler(event: KeyboardEvent) {
+    event = event || window.event;
+
+    switch (event.key) {
+        case 'h':
+            // left
+            player.index.x += 1;
+            break;
+        case 'j':
+            // down
+            player.index.y += 1;
+            break;
+        case 'k':
+            // up
+            player.index.y -= 1;
+            break;
+        case 'l':
+            // right
+            player.index.x -= 1;
+            break;
+        case 'y':
+            // left
+            player.index.x += 1;
+            player.index.y -= 1;
+            break;
+        case 'u':
+            // down
+            player.index.y -= 1;
+            player.index.x -= 1;
+            break;
+        case 'b':
+            // up
+            player.index.x += 1;
+            player.index.y += 1;
+            break;
+        case 'n':
+            // right
+            player.index.y += 1;
+            player.index.x -= 1;
+            break;
+    }
+}
+window.addEventListener('keydown', keyDownHandler, false);

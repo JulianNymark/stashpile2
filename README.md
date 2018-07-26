@@ -7,7 +7,7 @@ needs to complete MVP:
 - [x] OrbitController.js (it's pretty amazing!)
 - [x] tile onHover information! (mouse raycast -> tile index, currently part of debugUI)
 - [x] player (placeholder + positioning on world)
-- [ ] movement controls (moves player avatar & OrbitControl camera + OrbitControl target)
+- [x] movement controls (moves player avatar & OrbitControl camera + OrbitControl target)
 - [ ] trees
 - [ ] actions ( **c**hop tree, **g**rab wood... etc)
   - [ ] **c**hop ( also butcher) + direction key
