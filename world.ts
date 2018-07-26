@@ -54,11 +54,7 @@ class Tile {
 
     constructor(index: TileIndex) {
         this.index = index; // global index (map)
-
-        const scale = 1.2;
-        this.position = new THREE.Vector3(
-            this.index.x * scale, this.index.y * scale, 0,
-        ); // rendered position
+        this.position = indexToWorldPosition(this.index);
 
         this.info = {
             soilNutrition: Math.random(),
@@ -91,7 +87,19 @@ class Tile {
         }
         const geometry = new THREE.BoxGeometry(1, 1, 0.45);
         // TODO: colors by 'terrainType'...
-        const material = new THREE.MeshBasicMaterial({ color: 0x999966 });
+        let color: number;
+        switch (this.info.type) {
+            case 'soil':
+                color = 0x999966;
+                break;
+            case 'gravel':
+                color = 0x888888;
+                break;
+            default:
+                color = 0x111111;
+                break;
+        }
+        const material = new THREE.MeshBasicMaterial({ color });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.set(this.position.x, this.position.y, this.position.z);
         this.mesh = mesh;
@@ -109,4 +117,13 @@ class Tile {
         scene.remove(this.mesh);
         this.mesh = null;
     }
+}
+
+export function indexToWorldPosition(index: TileIndex): THREE.Vector3 {
+    const scale = 1.2;
+    return new THREE.Vector3(
+        index.x * scale,
+        index.y * scale,
+        index.z * scale
+    );
 }
