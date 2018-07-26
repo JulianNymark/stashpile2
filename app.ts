@@ -1,10 +1,13 @@
 import * as THREE from 'three';
 import 'three-examples/controls/OrbitControls';
 
+import './main.scss';
+
 import * as debugUI from './debugUI';
 import * as input from './input';
-import './main.scss';
 import * as utils from './utils';
+import * as world from './world';
+import * as player from './player';
 
 let scene: THREE.Scene;
 let camera: THREE.Camera;
@@ -22,38 +25,17 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const scale = 1.2;
-
-    for (let y = -10; y < 10; y++) {
-        for (let x = -10; x < 10; x++) {
-            const position = new THREE.Vector3(
-                x * scale, y * scale, 0,
-            );
-            meshesToAnimate.push(utils.addCuboid(scene, position));
-        }
-    }
-
-
+    world.init({ scene });
     input.init({ scene, camera, renderer });
+    player.init({ scene });
+
     debugUI.init({ scene, orbitControls: input.orbitControls });
 }
 
 function loop(dt: number) {
-
-    for (const mesh of meshesToAnimate) {
-        // mesh.rotation.x += 0.06;
-        // mesh.rotation.y += 0.1;
-        // if (Math.random() >= 0.5) {
-        //     mesh.position.z += 0.01;
-        // } else {
-        //     mesh.position.z -= 0.01;
-        // }
-
-        // const gravity = new three.Vector3(0, 0, 0.1);
-        // mesh.position.add(gravity);
-    }
-
-    input.loop();
+    world.loop(dt);
+    input.loop(dt);
+    player.loop(dt);
 
     renderer.render(scene, camera);
     debugUI.loop(dt);

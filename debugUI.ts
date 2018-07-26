@@ -1,7 +1,9 @@
 import * as _ from 'lodash';
 import * as THREE from 'three';
 
+import { mouseOverTileMetadata } from './input';
 import * as utils from './utils';
+import { worldTiles } from './world';
 
 const meshes: THREE.Mesh[] = [];
 
@@ -17,6 +19,28 @@ function fpsCounter(dt: number) {
         fpsElement.innerHTML = Math.round((1000 / dt)).toString();
     } else {
         console.log(`error finding element ${fpsID}, won't display fps`);
+    }
+}
+
+function mouseTileInfo(dt: number) {
+    const tileInfo0 = 'tile-info0';
+    const tileInfo1 = 'tile-info1';
+    const tileinfo0Element: HTMLElement | null = document.getElementById(tileInfo0);
+    const tileinfo1Element: HTMLElement | null = document.getElementById(tileInfo1);
+    if (tileinfo0Element) {
+        tileinfo0Element.innerHTML = `(${JSON.stringify(mouseOverTileMetadata.index)})`;
+    } else {
+        console.log(`error finding element ${tileInfo0}, won't display fps`);
+    }
+    if (tileinfo1Element) {
+        if (mouseOverTileMetadata.type !== 'tile') {
+            return;
+        }
+        const idx = mouseOverTileMetadata.index;
+        const tileInfo = worldTiles[idx.x][idx.y].info;
+        tileinfo1Element.innerHTML = `(${JSON.stringify(tileInfo)})`;
+    } else {
+        console.log(`error finding element ${tileInfo1}, won't display fps`);
     }
 }
 
@@ -46,6 +70,7 @@ export function init(debugInit: DebugInit) {
 
 export function loop(dt: number) {
     fpsCounter(dt);
+    mouseTileInfo(dt);
 }
 
 /**
