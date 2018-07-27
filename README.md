@@ -12,7 +12,7 @@ needs to complete MVP:
 - [ ] actions ( **c**hop tree, **g**rab wood... etc)
   - [ ] **c**hop ( also butcher) + direction key
   - [ ] **d**rop + direction (dd = drop center tile)
-  - [ ] movement (hjkl + yubn (diagonals))
+  - [x] movement (hjkl + yubn (diagonals))
   - [ ] **g**rab + direction (gg = grab center tile)
 - [ ] inventory (requires simple half world render / half menu area)
 - [ ] simple vision system (blocked by trees)
