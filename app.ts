@@ -1,13 +1,12 @@
 import * as THREE from 'three';
-import 'three-examples/controls/OrbitControls';
 
 import './main.scss';
 
 import * as debugUI from './debugUI';
 import * as input from './input';
+import * as player from './player';
 import * as utils from './utils';
 import * as world from './world';
-import * as player from './player';
 
 let scene: THREE.Scene;
 let camera: THREE.Camera;
@@ -24,6 +23,10 @@ function init() {
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 8);
+    directionalLight.position.fromArray([0.5, 0.5, 1]);
+    scene.add(directionalLight);
 
     world.init({ scene });
     input.init({ scene, camera, renderer });

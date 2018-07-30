@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import 'three-examples/controls/OrbitControls';
 
 import { player } from './player';
 import { TileIndex } from './world';
@@ -46,8 +47,8 @@ export function init(inputInit: InputInit) {
 
 export function loop(dt: number) {
     const trackPlayerVec = new THREE.Vector3(0, 4, 8).add(player.position);
-    orbitControls.object.position.fromArray(trackPlayerVec.toArray());
-    orbitControls.target.fromArray(player.position.toArray());
+    // UNCOMMENT: orbitControls.object.position.fromArray(trackPlayerVec.toArray());
+    // UNCOMMENT: orbitControls.target.fromArray(player.position.toArray());
     orbitControls.update();
 
     raycaster.setFromCamera(mouse, camera);

@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 
-let scene: THREE.Scene;
-export let worldTiles: Tile[][];
-let tileMeshes: THREE.Mesh[];
+import 'three-examples/loaders/GLTFLoader';
+import { player } from './player';
 
 export interface TileIndex {
     x: number;
@@ -25,8 +24,14 @@ interface WorldInit {
     scene: THREE.Scene;
 }
 
+let scene: THREE.Scene;
+export let worldTiles: Tile[][];
+let tileMeshes: THREE.Mesh[];
+let loader: any; // missing GLTFLoader definitions...
+
 export function init(worldInit: WorldInit) {
     scene = worldInit.scene;
+    loader = new THREE.GLTFLoader();
 
     tileMeshes = [];
     worldTiles = [];
@@ -37,6 +42,45 @@ export function init(worldInit: WorldInit) {
             worldTiles[x][y] = new Tile({ x, y, z: 0 });
         }
     }
+
+    //////////////////
+    // Instantiate a loader
+
+    // Optional: Provide a DRACOLoader instance to decode compressed mesh data
+    // THREE.DRACOLoader.setDecoderPath('/examples/js/libs/draco');
+    // loader.setDRACOLoader(new THREE.DRACOLoader());
+    loadModel('media/models/spruce_tree/scene.gltf', { x: 0, y: 0, z: 0 });
+    loadModel('media/models/spruce_tree/scene.gltf', { x: 0, y: 1, z: 0 });
+    //////////////////
+}
+
+function loadModel(path: string, index: TileIndex) {
+    loader.load(
+        path,
+        (tree: any) => { // called when the resource is loaded
+
+            const scaleTree = new THREE.Vector3(0.002, 0.002, 0.002);
+            const rotateTree = new THREE.Vector3(Math.PI / 2, Math.PI * 2 * Math.random(), 0);
+            const positionTree = indexToWorldPosition(index);
+            const positionTreeOffset = new THREE.Vector3(0, 0, 0.25);
+            positionTree.add(positionTreeOffset);
+            // const positionOffsetTree = new THREE.Vector3(0, 0, 0.25);
+            tree.scene.scale.fromArray(scaleTree.toArray());
+            tree.scene.rotation.fromArray(rotateTree.toArray());
+            tree.scene.position.fromArray(positionTree.toArray());
+            scene.add(tree.scene);
+            // gltf.animations; // Array<THREE.AnimationClip>
+            // gltf.scenes; // Array<THREE.Scene>
+            // gltf.cameras; // Array<THREE.Camera>
+            // gltf.asset; // Object
+        },
+        (xhr) => { // called while loading is progressing
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        (error) => { // called when loading has errors
+            console.log('An error happened');
+        },
+    );
 }
 
 export function loop(dt: number) {
@@ -63,12 +107,15 @@ class Tile {
     }
 
     public update(dt: number) {
-        // TODO: boundscheck around player on adding & removing to scene
-        if (this.index.x >= 0 && this.index.x < 10) {
-            if (this.index.y >= 0 && this.index.y < 20) {
+        const absDistFromPlayerX = Math.abs(player.index.x - this.index.x);
+        const absDistFromPlayerY = Math.abs(player.index.y - this.index.y);
+        if (absDistFromPlayerX < 10) {
+            if (absDistFromPlayerY < 10) {
                 this.addToScene();
+                // TODO: also meshes 'on tile' (items, trees...)
             } else {
                 this.removeFromScene();
+                // TODO: also meshes 'on tile' (items, trees...)
             }
         } else {
             this.removeFromScene();
@@ -78,7 +125,6 @@ class Tile {
             return;
         }
         this.mesh.position.set(this.position.x, this.position.y, this.position.z);
-        // TODO: check for selection & set color
     }
 
     public addToScene() {
@@ -86,7 +132,6 @@ class Tile {
             return;
         }
         const geometry = new THREE.BoxGeometry(1, 1, 0.45);
-        // TODO: colors by 'terrainType'...
         let color: number;
         switch (this.info.type) {
             case 'soil':
@@ -124,6 +169,6 @@ export function indexToWorldPosition(index: TileIndex): THREE.Vector3 {
     return new THREE.Vector3(
         index.x * scale,
         index.y * scale,
-        index.z * scale
+        index.z * scale,
     );
 }
