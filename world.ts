@@ -99,6 +99,7 @@ class Tile {
     public mesh: MeshWithMetadata | null;
     public info: TileInfo;
     public tree: GLTFObject | null;
+    private thetreeisset = false;
 
     constructor(index: TileIndex) {
         this.index = index; // global index (map)
@@ -116,8 +117,8 @@ class Tile {
     public update(_dt: number) {
         const absDistFromPlayerX = Math.abs(player.index.x - this.index.x);
         const absDistFromPlayerY = Math.abs(player.index.y - this.index.y);
-        if (absDistFromPlayerX < 1) {
-            if (absDistFromPlayerY < 1) {
+        if (absDistFromPlayerX < 10) {
+            if (absDistFromPlayerY < 10) {
                 this.addToScene();
             } else {
                 this.removeFromScene();
@@ -132,7 +133,7 @@ class Tile {
         this.mesh.position.set(this.position.x, this.position.y, this.position.z);
     }
 
-    public async addToScene() {
+    public addToScene() {
         if (!this.tree) {
             this.addTreeToScene();
         }
@@ -143,6 +144,7 @@ class Tile {
     }
 
     public removeFromScene() {
+        this.thetreeisset = false;
         if (this.tree !== null) {
             scene.remove(this.tree.scene);
         }
@@ -155,7 +157,15 @@ class Tile {
     }
 
     private async addTreeToScene() {
-        if (this.tree === null && this.info.type === 'soil') {
+        if (this.thetreeisset) {
+            return;
+        }
+        this.thetreeisset = true;
+
+        if (this.tree !== null) {
+            return;
+        }
+        if (this.info.type === 'soil') {
             const positionGltf = indexToWorldPosition(this.index);
             const positionGltfOffset = new THREE.Vector3(0, 0, 0.25);
             positionGltf.add(positionGltfOffset);
@@ -166,8 +176,13 @@ class Tile {
                 scale: new THREE.Vector3(0.002, 0.002, 0.002),
             };
 
-            this.tree = await loadModel('media/models/spruce_tree/scene.gltf', posRotScale);
+            const treeTypes = ['spruce', 'birch', 'cypress', 'elm', 'laurel'];
+            const randTree = treeTypes[Math.floor(Math.random() * treeTypes.length)];
+            const gltfPath = `media/models/${randTree}_tree/scene.gltf`;
+
+            this.tree = await loadModel(gltfPath, posRotScale);
             scene.add(this.tree.scene);
+            return;
         }
     }
 
