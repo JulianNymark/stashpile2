@@ -21,9 +21,9 @@ export function addSphere(scene: THREE.Scene, position: THREE.Vector3): THREE.Me
 let lastFrameTime = 0;
 let currFrameTime = 0;
 export function deltaLoop(loop: any) {
-    function _loop(DOMHighResTimeStamp: number) {
+    function _loop(domHighResTimeStamp: number) {
         lastFrameTime = currFrameTime;
-        currFrameTime = DOMHighResTimeStamp;
+        currFrameTime = domHighResTimeStamp;
         const deltaTime = currFrameTime - lastFrameTime;
         loop(deltaTime);
         requestAnimationFrame(_loop);

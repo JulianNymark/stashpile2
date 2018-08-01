@@ -9,10 +9,14 @@ export interface TileIndex {
     z: number;
 }
 
+export interface MeshWithMetadata extends THREE.Mesh {
+    metadata?: any;
+}
+
 interface Tile {
     index: TileIndex;
     position: THREE.Vector3;
-    mesh: THREE.Mesh | null;
+    mesh: MeshWithMetadata | null;
 }
 
 interface TileInfo {
@@ -24,16 +28,30 @@ interface WorldInit {
     scene: THREE.Scene;
 }
 
+interface GLTFObject {
+    scene: THREE.Scene;
+    scenes: THREE.Scene[];
+    animations: THREE.AnimationClip[];
+    cameras: THREE.Camera[];
+    asset: object;
+}
+
+interface PosRotScale {
+    position: THREE.Vector3;
+    rotation: THREE.Vector3;
+    scale: THREE.Vector3;
+}
+
 let scene: THREE.Scene;
 export let worldTiles: Tile[][];
-let tileMeshes: THREE.Mesh[];
+// let tileMeshes: THREE.Mesh[];
 let loader: any; // missing GLTFLoader definitions...
 
 export function init(worldInit: WorldInit) {
     scene = worldInit.scene;
     loader = new THREE.GLTFLoader();
 
-    tileMeshes = [];
+    // tileMeshes = [];
     worldTiles = [];
 
     for (let x = 0; x < 100; x++) {
@@ -42,45 +60,30 @@ export function init(worldInit: WorldInit) {
             worldTiles[x][y] = new Tile({ x, y, z: 0 });
         }
     }
-
-    //////////////////
-    // Instantiate a loader
-
-    // Optional: Provide a DRACOLoader instance to decode compressed mesh data
-    // THREE.DRACOLoader.setDecoderPath('/examples/js/libs/draco');
-    // loader.setDRACOLoader(new THREE.DRACOLoader());
-    loadModel('media/models/spruce_tree/scene.gltf', { x: 0, y: 0, z: 0 });
-    loadModel('media/models/spruce_tree/scene.gltf', { x: 0, y: 1, z: 0 });
-    //////////////////
 }
 
-function loadModel(path: string, index: TileIndex) {
-    loader.load(
-        path,
-        (tree: any) => { // called when the resource is loaded
+function loadModel(path: string, posRotScale?: PosRotScale) {
+    return new Promise<GLTFObject>(((resolve, reject) => {
+        loader.load(
+            path,
+            (gltf: GLTFObject) => { // called when the resource is loaded
+                if (posRotScale) {
+                    gltf.scene.position.fromArray(posRotScale.position.toArray());
+                    gltf.scene.rotation.fromArray(posRotScale.rotation.toArray());
+                    gltf.scene.scale.fromArray(posRotScale.scale.toArray());
+                }
 
-            const scaleTree = new THREE.Vector3(0.002, 0.002, 0.002);
-            const rotateTree = new THREE.Vector3(Math.PI / 2, Math.PI * 2 * Math.random(), 0);
-            const positionTree = indexToWorldPosition(index);
-            const positionTreeOffset = new THREE.Vector3(0, 0, 0.25);
-            positionTree.add(positionTreeOffset);
-            // const positionOffsetTree = new THREE.Vector3(0, 0, 0.25);
-            tree.scene.scale.fromArray(scaleTree.toArray());
-            tree.scene.rotation.fromArray(rotateTree.toArray());
-            tree.scene.position.fromArray(positionTree.toArray());
-            scene.add(tree.scene);
-            // gltf.animations; // Array<THREE.AnimationClip>
-            // gltf.scenes; // Array<THREE.Scene>
-            // gltf.cameras; // Array<THREE.Camera>
-            // gltf.asset; // Object
-        },
-        (xhr) => { // called while loading is progressing
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        (error) => { // called when loading has errors
-            console.log('An error happened');
-        },
-    );
+                resolve(gltf);
+            },
+            (_xhr: any) => { // called while loading is progressing
+                // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error: Error) => { // called when loading has errors
+                console.log('An error happened');
+                reject(error);
+            },
+        );
+    }));
 }
 
 export function loop(dt: number) {
@@ -92,9 +95,10 @@ export function loop(dt: number) {
 }
 
 class Tile {
-    public isSelected: boolean = false;
-    public mesh: THREE.Mesh | null = null;
+    public isSelected: boolean;
+    public mesh: MeshWithMetadata | null;
     public info: TileInfo;
+    public tree: GLTFObject | null;
 
     constructor(index: TileIndex) {
         this.index = index; // global index (map)
@@ -104,18 +108,19 @@ class Tile {
             soilNutrition: Math.random(),
             type: Math.random() > 0.5 ? 'soil' : 'gravel',
         };
+        this.isSelected = false;
+        this.mesh = null;
+        this.tree = null;
     }
 
-    public update(dt: number) {
+    public update(_dt: number) {
         const absDistFromPlayerX = Math.abs(player.index.x - this.index.x);
         const absDistFromPlayerY = Math.abs(player.index.y - this.index.y);
-        if (absDistFromPlayerX < 10) {
-            if (absDistFromPlayerY < 10) {
+        if (absDistFromPlayerX < 1) {
+            if (absDistFromPlayerY < 1) {
                 this.addToScene();
-                // TODO: also meshes 'on tile' (items, trees...)
             } else {
                 this.removeFromScene();
-                // TODO: also meshes 'on tile' (items, trees...)
             }
         } else {
             this.removeFromScene();
@@ -127,7 +132,46 @@ class Tile {
         this.mesh.position.set(this.position.x, this.position.y, this.position.z);
     }
 
-    public addToScene() {
+    public async addToScene() {
+        if (!this.tree) {
+            this.addTreeToScene();
+        }
+
+        if (!this.mesh) {
+            this.addTileMeshToScene();
+        }
+    }
+
+    public removeFromScene() {
+        if (this.tree !== null) {
+            scene.remove(this.tree.scene);
+        }
+
+        if (!this.mesh) {
+            return;
+        }
+        scene.remove(this.mesh);
+        this.mesh = null;
+    }
+
+    private async addTreeToScene() {
+        if (this.tree === null && this.info.type === 'soil') {
+            const positionGltf = indexToWorldPosition(this.index);
+            const positionGltfOffset = new THREE.Vector3(0, 0, 0.25);
+            positionGltf.add(positionGltfOffset);
+
+            const posRotScale: PosRotScale = {
+                position: positionGltf,
+                rotation: new THREE.Vector3(Math.PI / 2, Math.PI * 2 * Math.random(), 0),
+                scale: new THREE.Vector3(0.002, 0.002, 0.002),
+            };
+
+            this.tree = await loadModel('media/models/spruce_tree/scene.gltf', posRotScale);
+            scene.add(this.tree.scene);
+        }
+    }
+
+    private addTileMeshToScene() {
         if (this.mesh) {
             return;
         }
@@ -151,16 +195,9 @@ class Tile {
         this.mesh.metadata = {
             index: this.index, type: 'tile',
         };
-        tileMeshes.push(this.mesh);
+        // tileMeshes.push(this.mesh);
 
         scene.add(this.mesh);
-    }
-    public removeFromScene() {
-        if (!this.mesh) {
-            return;
-        }
-        scene.remove(this.mesh);
-        this.mesh = null;
     }
 }
 

@@ -12,7 +12,7 @@ let scene: THREE.Scene;
 let camera: THREE.Camera;
 let renderer: THREE.WebGLRenderer;
 
-const meshesToAnimate: THREE.Mesh[] = [];
+// const meshesToAnimate: THREE.Mesh[] = [];
 // const meshes: THREE.Mesh[] = [];
 
 function init() {

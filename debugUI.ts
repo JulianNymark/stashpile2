@@ -22,7 +22,7 @@ function fpsCounter(dt: number) {
     }
 }
 
-function mouseTileInfo(dt: number) {
+function mouseTileInfo(_dt: number) {
     const tileInfo0 = 'tile-info0';
     const tileInfo1 = 'tile-info1';
     const tileinfo0Element: HTMLElement | null = document.getElementById(tileInfo0);
@@ -84,7 +84,7 @@ function sliderControl(sliderID: string, target: object, valpath: string, coeffi
     const sliderElem: HTMLElement | null = document.getElementById(sliderID);
     const valueElem: HTMLElement | null = document.getElementById(sliderID + '-val');
     if (sliderElem) {
-        sliderElem.addEventListener('input', (e) => {
+        sliderElem.addEventListener('input', (e: any) => {
             const slider = (e.target) ? e.target : e.srcElement;
             let newValue = 0;
             if (slider) {

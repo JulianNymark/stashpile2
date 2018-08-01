@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import 'three-examples/controls/OrbitControls';
 
 import { player } from './player';
-import { TileIndex } from './world';
+import { MeshWithMetadata, TileIndex } from './world';
 
 // from app
 let camera: THREE.Camera;
@@ -13,8 +13,8 @@ export let orbitControls: THREE.OrbitControls; // export to app is ok
 let raycaster: THREE.Raycaster;
 let mouse: THREE.Vector2;
 
-export const mouseOverTileMetadata: { index: TileIndex, type: string } = {
-    index: {},
+export const mouseOverTileMetadata: { index: TileIndex, type: string | null } = {
+    index: { x: 0, y: 0, z: 0 },
     type: null,
 };
 
@@ -45,8 +45,8 @@ export function init(inputInit: InputInit) {
     orbitControls.reset();
 }
 
-export function loop(dt: number) {
-    const trackPlayerVec = new THREE.Vector3(0, 4, 8).add(player.position);
+export function loop(_dt: number) {
+    // UNCOMMENT: const trackPlayerVec = new THREE.Vector3(0, 4, 8).add(player.position);
     // UNCOMMENT: orbitControls.object.position.fromArray(trackPlayerVec.toArray());
     // UNCOMMENT: orbitControls.target.fromArray(player.position.toArray());
     orbitControls.update();
@@ -55,11 +55,12 @@ export function loop(dt: number) {
     // calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(scene.children);
     for (const intersect of intersects) {
-        const tileMetadata = intersect.object.metadata;
+        const tileMesh = intersect.object as MeshWithMetadata;
+        const tileMetadata = tileMesh.metadata;
         if (!tileMetadata || tileMetadata.type !== 'tile') {
             continue;
         }
-        console.log(JSON.stringify(tileMetadata, null, 2));
+        // DEBUG: console.log(JSON.stringify(tileMetadata, null, 2));
         mouseOverTileMetadata.index = tileMetadata.index;
         mouseOverTileMetadata.type = tileMetadata.type;
         break;
