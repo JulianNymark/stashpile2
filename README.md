@@ -8,7 +8,7 @@ needs to complete MVP:
 - [x] tile onHover information! (mouse raycast -> tile index, currently part of debugUI)
 - [x] player (placeholder + positioning on world)
 - [x] movement controls (moves player avatar & OrbitControl camera + OrbitControl target)
-- [ ] trees
+- [x] trees
 - [ ] actions ( **c**hop tree, **g**rab wood... etc)
   - [ ] **c**hop ( also butcher) + direction key
   - [ ] **d**rop + direction (dd = drop center tile)
