@@ -1,6 +1,8 @@
 # stashpile2
 second time's the charm... this time in 3D! 
 
+<img src="screenshots/screenshot.png"/>
+
 needs to complete MVP:
 - [x] tiles!
 - [x] 3d!
